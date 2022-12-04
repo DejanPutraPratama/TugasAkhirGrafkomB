@@ -6,8 +6,8 @@ FromRight = 1
 FromLeft = 2
 FromTop = 3
 FromBottom = 4
-WindowWidth = 800
-WindowHeight = 500
+windowWidth = 800
+windowHeight = 500
 DeltaX = 1
 DeltaY = 1
 TimeInterval = 5
@@ -20,7 +20,7 @@ class Block:
         self.bottom = bottom
 
 ball = Block(100, 100, 120, 120)
-border = Block(0, 0, WindowWidth, WindowHeight)
+border = Block(0, 0, windowWidth, windowHeight)
 stick = Block(370, 0, 470, 10)
 side1 = Block(0, 0, 10, 280)
 side2 = Block(790, 0, 800, 280)
@@ -36,7 +36,7 @@ def init():
 
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    glOrtho(0, WindowWidth, 0, WindowHeight, 0, 1)
+    glOrtho(0, windowWidth, 0, windowHeight, 0, 1)
 
     glMatrixMode(GL_MODELVIEW)
 
@@ -267,3 +267,88 @@ def Display():
                     x.top=-5
                     x.left=-5
                     x.right=-5
+
+        for x in blockList:
+
+            if (((ball.top == x.bottom or ball.bottom == x.top) and (
+                    (ball.right >= x.left and ball.right <= x.right) or (
+                    ball.left <= x.right and ball.left >= x.left))) or ((
+                    (ball.right == x.left or ball.left == x.right) and (
+                    (ball.top >= x.bottom and ball.top <= x.top) or (
+                    ball.bottom >= x.bottom and ball.bottom <= x.top))))):
+
+                if (ball.top == x.bottom):
+                    deltaY = -1
+                elif (ball.right == x.left):
+                    deltaX = -1
+                elif (ball.left == x.right):
+                    deltaX = 1
+                else:
+                    deltaY = 1
+
+                x.left = 0
+                x.bottom = 0
+                x.top = 0
+                x.right = 0
+
+        glColor(0, 1, 0)
+
+        Drawrectangleangle(ball,0,1,0)
+
+        Stick.left = mouse_x - 50
+        Stick.right = mouse_x + 50
+
+        if Stick.left <= 14:
+            Stick.left = 14
+            Stick.right = 114
+
+        if Stick.right >= windowWitdh-14:
+            Stick.right = windowWitdh-14
+            Stick.left = windowWitdh - 114
+
+        Drawrectangleangle(Stick,0,1,0)
+
+        string = "Lives : " + str(Lives)
+        drawText(string, 680, 20)
+        string = "Score : " + str(score)
+        drawText(string, 680, 50)
+        glutSwapBuffers()
+
+        i=0
+        for x in blockList:
+            if(x.left>0):
+                i+=1;
+    
+        if(i==0):
+            glClearColor(0, 1, 0, 1)
+            glClear(GL_COLOR_BUFFER_BIT)
+            string = "press P to play again"
+            drawText(string, 250, 250)
+            string = "Nice Work"
+            drawText(string, 250, 250)
+            glutSwapBuffers()
+
+    elif (Lives == 0 and exit == False):
+        glClearColor(1, 0, 0, 1)
+        glClear(GL_COLOR_BUFFER_BIT)
+        string = "press P to play again"
+        drawText(string, 320, 250)
+        string = "Game Over"
+        drawText(string, 360, 300)
+        glutSwapBuffers()
+
+def main():
+    glutInit()
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
+    glutInitWindowSize(windowWitdh, windowHeight)
+    glutInitWindowPosition(0, 0)
+    glutCreateWindow("Brick Block")
+    glutDisplayFunc(Display)
+    glutTimerFunc(time_interval, Timer, 1)
+    glutKeyboardFunc(keyboard)
+    glutPassiveMotionFunc(MouseMotion)
+    init()
+    glutMainLoop()
+
+
+main()
