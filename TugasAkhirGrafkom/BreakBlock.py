@@ -2,15 +2,15 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
 
-fromRight = 1
-fromLeft = 2
-fromTop = 3
-fromBottom = 4
-windowWitdh = 800
-windowHeight = 500
-deltaX = 1
-deltaY = 1
-time_interval = 5
+FromRight = 1
+FromLeft = 2
+FromTop = 3
+FromBottom = 4
+WindowWidth = 800
+WindowHeight = 500
+DeltaX = 1
+DeltaY = 1
+TimeInterval = 5
 
 class block:
     def __init__(self, left, bottom, right, top):
@@ -19,17 +19,26 @@ class block:
         self.right = right
         self.top = top
 
-ball = block(100, 100, 120, 120)
-border = block(0, 0, windowWitdh, windowHeight)
+Box = block(100, 100, 120, 120)
+border = block(0, 0, WindowWidth, WindowHeight)
 Stick = block(370, 0, 470, 10) 
 side1 = block(0, 0, 10, 280)
 side2 = block(790, 0, 800, 280)
+sideX= 0
+sideY= 350
 blockList = []
 sidelist=[]
 x = 15
 y = 350
-sideX=0
-sideY=350
+
+def init():
+    glClearColor(255, 255, 255, 1)
+
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    glOrtho(0, WindowWidth, 0, WindowHeight, 0, 1)  
+
+    glMatrixMode(GL_MODELVIEW)
 
 for i in range(0, 156):
     if (i % 13 == 0):
@@ -67,15 +76,6 @@ def defaultValues():
         blockList.append(block(x, y, x + 50, y + 20))
         x += 60
 
-def init():
-    glClearColor(255, 255, 255, 1)
-
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    glOrtho(0, windowWitdh, 0, windowHeight, 0, 1)  
-
-    glMatrixMode(GL_MODELVIEW)
-
 def Drawrectangleangle(rectangle,r,g,b):
     glLoadIdentity()
     glColor(0,0,255)
@@ -107,23 +107,23 @@ def drawEndText(string, x, y):
     for c in string:
         glutStrokeCharacter(GLUT_STROKE_ROMAN, c)
 
-def BallAndWall(ball, wall):  
-    global fromRight
-    global fromLeft
-    global fromTop
-    global fromBottom
+def BoxAndWall(Box, wall):  
+    global FromRight
+    global FromLeft
+    global FromTop
+    global FromBottom
 
-    if ball.right >= wall.right-14:
-        return fromRight
-    if ball.left <= wall.left+14:
-        return fromLeft
-    if ball.top >= wall.top-14:
-        return fromTop
-    if ball.bottom <= wall.bottom:
-        return fromBottom
+    if Box.right >= wall.right-50:
+        return FromRight
+    if Box.left <= wall.left+50:
+        return FromLeft
+    if Box.top >= wall.top-50:
+        return FromTop
+    if Box.bottom <= wall.bottom:
+        return FromBottom
 
-def BallAndPlayer(ball, player):  
-    if ball.bottom <= player.top and ball.left >= player.left and ball.right <= player.right:
+def BoxAndPlayer(Box, player):  
+    if Box.bottom <= player.top and Box.left >= player.left and Box.right <= player.right:
         return True
     return False
 
@@ -139,23 +139,27 @@ def keyboard(key, x, y):
     elif key == b" ":
         pause = not pause
     elif key == b"p":
-        glClearColor(0, 0, 0, 1)
+        glClearColor(1, 1, 1, 1)
         exit = False
         score=0
-        Lives = 3
+        Lives = 2
         defaultValues()
 
 mouse_x = 0
+# mouse_y = 0
 def MouseMotion(x, y):
     global mouse_x
+    # global mouse_y
     mouse_x = x
+    # mouse_y = y
+    
 
 def Timer(v):
     Display()
 
-    glutTimerFunc(time_interval, Timer, 1)
+    glutTimerFunc(TimeInterval, Timer, 1)
 
-Lives = 3
+Lives = 2
 pause = True
 score= 0
 move=0
@@ -164,12 +168,12 @@ def Display():
     global score
     global Lives
     global playerResult
-    global fromRight
-    global fromLeft
-    global fromTop
-    global fromBottom
-    global deltaX
-    global deltaY
+    global FromRight
+    global FromLeft
+    global FromTop
+    global FromBottom
+    global DeltaX
+    global DeltaY
     global pause
     global blockList
     global move
@@ -178,35 +182,35 @@ def Display():
     if (Lives > 0 and exit == False):
         glClear(GL_COLOR_BUFFER_BIT)
 
-        if (pause and Lives>0):
-            string = "press space to play ' Q ' to exit"
-            drawText(string, 250, 250)
+        if (pause and Lives  >0):
+            string = "press space to play Q to exit"
+            drawText(string, 270, 250)
 
-        Drawrectangleangle(block(0,windowHeight-14,windowWitdh,windowHeight),0,0,1)
-        Drawrectangleangle(block(0,windowHeight-120,14,windowHeight-10),0,0,1)
-        Drawrectangleangle(block(windowWitdh-14,windowHeight-120,windowWitdh,windowHeight-10),0,0,1)
-        Drawrectangleangle(block(0, windowHeight - 240, 14, windowHeight - 120), 1, 1, 1)
-        Drawrectangleangle(block(windowWitdh-14,windowHeight-240,windowWitdh,windowHeight-120),1,1,1)
-        Drawrectangleangle(block(0, windowHeight - 360, 14, windowHeight - 240), 1, 1, 0)
-        Drawrectangleangle(block(windowWitdh - 14, windowHeight - 360, windowWitdh, windowHeight - 240), 1, 1, 0)
-        Drawrectangleangle(block(0, windowHeight - 490, 14, windowHeight - 360), 1, 0, 0)
-        Drawrectangleangle(block(windowWitdh - 14, windowHeight - 490, windowWitdh, windowHeight - 360), 1, 0, 0)
+        Drawrectangleangle(block(0,WindowHeight-14,WindowWidth,WindowHeight),0,0,1)
+        Drawrectangleangle(block(0,WindowHeight-120,14,WindowHeight-10),0,0,1)
+        Drawrectangleangle(block(WindowWidth-14,WindowHeight-120,WindowWidth,WindowHeight-10),0,0,1)
+        Drawrectangleangle(block(0, WindowHeight - 240, 14, WindowHeight - 120), 1, 1, 1)
+        Drawrectangleangle(block(WindowWidth-14,WindowHeight-240,WindowWidth,WindowHeight-120),1,1,1)
+        Drawrectangleangle(block(0, WindowHeight - 360, 14, WindowHeight - 240), 1, 1, 0)
+        Drawrectangleangle(block(WindowWidth - 14, WindowHeight - 360, WindowWidth, WindowHeight - 240), 1, 1, 0)
+        Drawrectangleangle(block(0, WindowHeight - 490, 14, WindowHeight - 360), 1, 0, 0)
+        Drawrectangleangle(block(WindowWidth - 14, WindowHeight - 490, WindowWidth, WindowHeight - 360), 1, 0, 0)
         Drawrectangleangle(block(0, 0, 14, 10), 0, 1, 0)
-        Drawrectangleangle(block(windowWitdh - 14, 0 , windowWitdh, 10), 0, 1, 0)
+        Drawrectangleangle(block(WindowWidth - 14, 0 , WindowWidth, 10), 0, 1, 0)
        
         for x in blockList:  
             r = 0
             b = 1
             g = 0
-            if (x.bottom <= windowHeight - 120 and x.bottom > windowHeight - 240):
+            if (x.bottom <= WindowHeight - 120 and x.bottom > WindowHeight - 240):
                 r = 1
                 b = 1
                 g = 1
-            elif (x.bottom <= windowHeight - 240 and x.bottom > windowHeight - 360):
+            elif (x.bottom <= WindowHeight - 240 and x.bottom > WindowHeight - 360):
                 r = 1
                 b = 0
                 g = 1
-            elif (x.bottom <= windowHeight - 360 and x.bottom > windowHeight - 490):
+            elif (x.bottom <= WindowHeight - 360 and x.bottom > WindowHeight - 490):
                 r = 1
                 b = 0
                 g = 0
@@ -224,31 +228,31 @@ def Display():
                     x.bottom-=1
                     x.top-=1
 
-            ball.left = ball.left + deltaX  
-            ball.right = ball.right + deltaX
-            ball.top = ball.top + deltaY
-            ball.bottom = ball.bottom + deltaY
+            Box.left = Box.left + DeltaX  
+            Box.right = Box.right + DeltaX
+            Box.top = Box.top + DeltaY
+            Box.bottom = Box.bottom + DeltaY
 
-            if BallAndPlayer(ball, Stick) == True:
-                if (Stick.right - 50 < ball.left):
-                    deltaY = 1
-                    deltaX = 1
+            if BoxAndPlayer(Box, Stick) == True:
+                if (Stick.right - 50 < Box.left):
+                    DeltaY = 1
+                    DeltaX = 1
                 else:
-                    deltaY = 1
-                    deltaX = -1
+                    DeltaY = 1
+                    DeltaX = -1
 
-            # Ini untuk bola dan dinding
-            if BallAndWall(ball, border) == fromRight:
-                deltaX = -1
+            # Ini untuk kotak dan dinding
+            if BoxAndWall(Box, border) == FromRight:
+                DeltaX = -1
 
-            if BallAndWall(ball, border) == fromLeft:
-                deltaX = 1
+            if BoxAndWall(Box, border) == FromLeft:
+                DeltaX = 1
 
-            if BallAndWall(ball, border) == fromTop:
-                deltaY = -1
+            if BoxAndWall(Box, border) == FromTop:
+                DeltaY = -1
 
-            if BallAndWall(ball, border) == fromBottom:
-                deltaY = 1
+            if BoxAndWall(Box, border) == FromBottom:
+                DeltaY = 1
                 Lives = Lives - 1
 
             for x in blockList:
@@ -266,48 +270,50 @@ def Display():
 
         for x in blockList:
 
-            if (((ball.top == x.bottom or ball.bottom == x.top) and (
-                    (ball.right >= x.left and ball.right <= x.right) or (
-                    ball.left <= x.right and ball.left >= x.left))) or ((
-                    (ball.right == x.left or ball.left == x.right) and (
-                    (ball.top >= x.bottom and ball.top <= x.top) or (
-                    ball.bottom >= x.bottom and ball.bottom <= x.top))))):
+            if (((Box.top == x.bottom or Box.bottom == x.top) and (
+                    (Box.right >= x.left and Box.right <= x.right) or (
+                    Box.left <= x.right and Box.left >= x.left))) or ((
+                    (Box.right == x.left or Box.left == x.right) and (
+                    (Box.top >= x.bottom and Box.top <= x.top) or (
+                    Box.bottom >= x.bottom and Box.bottom <= x.top))))):
 
-                if (ball.top == x.bottom):
-                    deltaY = -1
-                elif (ball.right == x.left):
-                    deltaX = -1
-                elif (ball.left == x.right):
-                    deltaX = 1
+                if (Box.top == x.bottom):
+                    DeltaY = -1
+                elif (Box.right == x.left):
+                    DeltaX = -1
+                elif (Box.left == x.right):
+                    DeltaX = 1
                 else:
-                    deltaY = 1
+                    DeltaY = 1
 
                 x.left = 0
                 x.bottom = 0
                 x.top = 0
                 x.right = 0
 
-        glColor(0, 1, 0)
+        glColor(1, 1, 1)
 
-        Drawrectangleangle(ball,0,1,0)
+        Drawrectangleangle(Box,0,1,0)
 
         Stick.left = mouse_x - 50
         Stick.right = mouse_x + 50
+        # Stick.top = mouse_y + 10
+        # Stick.bottom = mouse_y - 10
 
         if Stick.left <= 14:
             Stick.left = 14
             Stick.right = 114
 
-        if Stick.right >= windowWitdh-14:
-            Stick.right = windowWitdh-14
-            Stick.left = windowWitdh - 114
-
+        if Stick.right >= WindowWidth-14:
+            Stick.right = WindowWidth-14
+            Stick.left = WindowWidth - 114
+        
         Drawrectangleangle(Stick,0,1,0)
 
         string = "Lives : " + str(Lives)
         drawText(string, 680, 20)
         string = "Score : " + str(score)
-        drawText(string, 680, 50)
+        drawText(string, 680, 40)
         glutSwapBuffers()
 
         i=0
@@ -316,7 +322,7 @@ def Display():
                 i+=1;
     
         if(i==0):
-            glClearColor(0, 1, 0, 1)
+            glClearColor(1, 0, 0, 1)
             glClear(GL_COLOR_BUFFER_BIT)
             string = "press P to play again"
             drawText(string, 250, 250)
@@ -336,11 +342,11 @@ def Display():
 def main():
     glutInit()
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB)
-    glutInitWindowSize(windowWitdh, windowHeight)
+    glutInitWindowSize(WindowWidth, WindowHeight)
     glutInitWindowPosition(0, 0)
-    glutCreateWindow("Brick Block")
+    glutCreateWindow("Break Block")
     glutDisplayFunc(Display)
-    glutTimerFunc(time_interval, Timer, 1)
+    glutTimerFunc(TimeInterval, Timer, 1)
     glutKeyboardFunc(keyboard)
     glutPassiveMotionFunc(MouseMotion)
     init()
