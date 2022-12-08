@@ -81,7 +81,7 @@ def Drawrectangleangle(rectangle,r,g,b):
     glColor(0,0,255)
 
     glBegin(GL_QUADS)
-    glVertex(rectangle.left, rectangle.bottom, 0)  # Left - Bottom
+    glVertex(rectangle.left, rectangle.bottom, 0)  
     glVertex(rectangle.right, rectangle.bottom, 0)
     glVertex(rectangle.right, rectangle.top, 0)
     glVertex(rectangle.left, rectangle.top, 0)
@@ -183,8 +183,8 @@ def Display():
         glClear(GL_COLOR_BUFFER_BIT)
 
         if (pause and Lives  >0):
-            string = "press space to play Q to exit"
-            drawText(string, 270, 250)
+            string = "press space to play and press Q to exit"
+            drawText(string, 230, 250)
 
         Drawrectangleangle(block(0,WindowHeight-14,WindowWidth,WindowHeight),0,0,1)
         Drawrectangleangle(block(0,WindowHeight-120,14,WindowHeight-10),0,0,1)
@@ -321,23 +321,14 @@ def Display():
             if(x.left>0):
                 i+=1;
     
-        if(i==0):
+        if (Lives == 0 and exit == False):
             glClearColor(1, 0, 0, 1)
             glClear(GL_COLOR_BUFFER_BIT)
             string = "press P to play again"
-            drawText(string, 250, 250)
-            string = "Nice Work"
-            drawText(string, 250, 250)
+            drawText(string, 320, 250)
+            string = "Game Over"
+            drawText(string, 360, 300)
             glutSwapBuffers()
-
-    elif (Lives == 0 and exit == False):
-        glClearColor(1, 0, 0, 1)
-        glClear(GL_COLOR_BUFFER_BIT)
-        string = "press P to play again"
-        drawText(string, 320, 250)
-        string = "Game Over"
-        drawText(string, 360, 300)
-        glutSwapBuffers()
 
 def main():
     glutInit()
